@@ -42,6 +42,8 @@ var Reason_1 = require("../core/Reason");
 var document1Data = require('./data/document1-data.json');
 var document1Expected = require('./data/document1-expected.json');
 var simpleProductContractData = require('./data/productContract-data.json');
+var simpleProductContract2Data = require('./data/productContract-data2.json');
+var pizzaProductContractData = require('./data/productContract-pizza.json');
 var simpleProductContractExpected = require('./data/productContract-expected.json');
 var numberProductContract = require('./data/productContract-with-number-option.json');
 var stringProductContract = require('./data/productContract-with-string-option.json');
@@ -67,6 +69,7 @@ describe('Document', function () {
                 throw new Error('There is not string option');
             }
             stringValue.value = undefined;
+            console.log(document.productContract.options, document.getRejectReason());
             document.check().should.be.true();
             should(document.getRejectReason()).be.undefined();
         });
@@ -105,17 +108,6 @@ describe('Document', function () {
             it('should return ok', function () {
                 document.check().should.be.true();
                 should(document.getRejectReason()).be.undefined();
-            });
-            it('should reject if number options is not match regex', function () {
-                var numberValue = document.values.find(function (v) { return v.id === 'numberOption'; });
-                if (!numberValue) {
-                    throw new Error('There is not number option');
-                }
-                numberValue.value = 19;
-                document.check().should.be.false();
-                var reason = new Reason_1.default('RME', 'regex matching error');
-                reason.rejectOption = 'numberOption';
-                should(document.getRejectReason()).be.eql(reason);
             });
             it('should reject if number options is larger than maximum', function () {
                 var numberValue = document.values.find(function (v) { return v.id === 'numberOption'; });
@@ -317,7 +309,7 @@ describe('Document', function () {
             values: [],
             productContract: simpleProductContractData
         });
-        document.addOption('selectOption', 's-1').should.be.true();
+        document.addOption('selectOption', 's-1');
         document.values.should.match([{
                 id: 'selectOption',
                 value: 's-1'
@@ -327,24 +319,38 @@ describe('Document', function () {
         it('should add option in select options', function () {
             var document = __1.Document.build({
                 values: [],
-                productContract: selectProductContractComplex
+                productContract: simpleProductContractData
             });
-            document.addOption('selectOption', 'selectWithNumberString').should.be.true();
-            document.addOption('numberOptionRequired', 5).should.be.true();
+            document.addOption('selectOption', 's-1');
+            document.addOption('numberOption', 1);
             document.values.should.match([{
                     id: 'selectOption',
-                    value: 'selectWithNumberString'
+                    value: 's-1'
                 }, {
-                    id: 'numberOptionRequired',
-                    value: 5
+                    id: 'numberOption',
+                    value: 1
                 }]);
+        });
+        it('should add option in last and not select options', function () {
+            var document = __1.Document.build({
+                values: [],
+                productContract: simpleProductContractData
+            });
+            document.addOption('oneMoreString', "just string");
         });
         it('should reject if option not found', function () {
             var document = __1.Document.build({
                 values: [],
                 productContract: selectProductContractComplex
             });
-            document.addOption('brokenOption', 'value').should.be.false();
+            var catchError = false;
+            try {
+                document.addOption('brokenOption', 'value');
+            }
+            catch (_a) {
+                catchError = true;
+            }
+            catchError.should.be.true();
             document.values.should.match([]);
         });
         it('should reject if option not valid', function () {
@@ -352,51 +358,76 @@ describe('Document', function () {
                 values: [],
                 productContract: selectProductContractComplex
             });
-            document.addOption('selectOption', 'brokenSelect').should.be.false();
+            var catchError = false;
+            try {
+                document.addOption('selectOption', 'brokenSelect');
+            }
+            catch (_a) {
+                catchError = true;
+            }
+            catchError.should.be.true();
             document.values.should.match([]);
         });
         it('should update value if it has been set previously', function () {
             var document = __1.Document.build({
                 values: [],
-                productContract: selectProductContractComplex
+                productContract: simpleProductContractData
             });
-            document.addOption('selectOption', 'selectWithNumberString').should.be.true();
-            document.addOption('numberOptionRequired', 5).should.be.true();
-            document.addOption('numberOptionRequired', 7).should.be.true();
+            document.addOption('selectOption', 's-1');
+            document.addOption('numberOption', 5);
+            document.addOption('numberOption', 7);
             document.values.should.match([{
                     id: 'selectOption',
-                    value: 'selectWithNumberString'
+                    value: 's-1'
                 }, {
-                    id: 'numberOptionRequired',
+                    id: 'numberOption',
                     value: 7
                 }]);
         });
         it('should remove unselected options', function () {
             var document = __1.Document.build({
                 values: [],
-                productContract: selectProductContractComplex
+                productContract: simpleProductContractData
             });
-            document.addOption('selectOption', 'selectWithNumberString').should.be.true();
-            document.addOption('numberOptionRequired', 5).should.be.true();
+            document.addOption('selectOption', 's-1');
+            document.addOption('numberOption', 5);
             document.values.should.match([{
                     id: 'selectOption',
-                    value: 'selectWithNumberString'
+                    value: 's-1'
                 }, {
-                    id: 'numberOptionRequired',
+                    id: 'numberOption',
                     value: 5
                 }]);
-            document.addOption('selectOption', 'selectWithSelect').should.be.true();
-            document.addOption('selectOptionInner', 's-1').should.be.true();
+            document.addOption('selectOption', 's-2');
             document.values.should.match([{
                     id: 'selectOption',
-                    value: 'selectWithSelect'
+                    value: 's-2'
                 }, {
-                    id: 'selectOptionInner',
-                    value: 's-1'
+                    id: 'numberOption',
+                    value: 5
                 }]);
         });
         describe('and activate action', function () {
             it('should modify price', function () {
+            });
+            it('should change hidden state', function () {
+                var document = __1.Document.build({
+                    values: [],
+                    productContract: simpleProductContract2Data
+                });
+                document.addOption('selectOption', 's-1');
+                var option = document.productContractModified.options.find(function (opt) { return opt.id === 'numberOption'; });
+                should(option).not.be.undefined();
+                if (option) {
+                    option.isHidden.should.be.true();
+                }
+                console.log(document);
+                document.addOption('selectOption', 's-2');
+                option = document.productContractModified.options.find(function (opt) { return opt.id === 'numberOption'; });
+                should(option).not.be.undefined();
+                if (option) {
+                    option.isHidden.should.be.false();
+                }
             });
         });
     });

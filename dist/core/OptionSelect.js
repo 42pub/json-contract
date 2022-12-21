@@ -7,6 +7,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -23,6 +25,7 @@ var OptionSelect = (function (_super) {
         _this.options = options;
         _this.anyData = anyData;
         _this.handler = handler;
+        _this.isRequired = true;
         return _this;
     }
     OptionSelect.buildOption = function (_a) {
@@ -35,14 +38,13 @@ var OptionSelect = (function (_super) {
             var checked = this.options.filter(function (opt) { return opt.id === value; })[0];
             if (this.isRequired)
                 if (!checked)
-                    return false;
+                    throw "Select option not found";
             if (checked)
                 if (checked.form.options.length)
                     if (document)
-                        if (!checked.form.validate(document))
-                            return false;
+                        checked.form.validate(document);
         }
-        return _super.prototype.validate.call(this, value);
+        _super.prototype.validate.call(this, value);
     };
     OptionSelect.prototype.getRejectReason = function (value, document) {
         if (value) {
@@ -60,8 +62,8 @@ var OptionSelect = (function (_super) {
         }
         return _super.prototype.getRejectReason.call(this, value);
     };
-    OptionSelect.prototype.getSelected = function (value) {
-        return this.options.find(function (opt) { return opt.id === value; });
+    OptionSelect.prototype.getSelected = function (id) {
+        return this.options.find(function (opt) { return opt.id === id; });
     };
     OptionSelect.prototype.getJSON = function () {
         var clone = _super.prototype.getJSON.call(this);

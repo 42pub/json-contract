@@ -32,10 +32,9 @@ var Option = (function () {
         if (!this.isHidden) {
             if (this.isRequired) {
                 if (!value)
-                    return false;
+                    throw "Value is required";
             }
         }
-        return true;
     };
     Option.prototype.getRejectReason = function (value) {
         if (!this.isHidden) {

@@ -93,20 +93,6 @@ describe('Document', () => {
         should(document.getRejectReason()).be.undefined();
       });
 
-      it('should reject if number options is not match regex', () => {
-        const numberValue = document.values.find(v => v.id === 'numberOption');
-        if (!numberValue) {
-          throw new Error('There is not number option');
-        }
-
-        numberValue.value = 19;
-
-        document.check().should.be.false();
-        const reason = new Reason('RME', 'regex matching error');
-        reason.rejectOption = 'numberOption';
-        should(document.getRejectReason()).be.eql(reason);
-      });
-
       it('should reject if number options is larger than maximum', () => {
         const numberValue = document.values.find(v => v.id === 'numberOption');
         if (!numberValue) {
@@ -353,7 +339,7 @@ describe('Document', () => {
       productContract: simpleProductContractData
     });
 
-    document.addOption('selectOption', 's-1').should.be.true();
+    document.addOption('selectOption', 's-1');
 
     document.values.should.match([{
       id: 'selectOption',
@@ -369,8 +355,8 @@ describe('Document', () => {
         productContract: simpleProductContractData
       });
 
-      document.addOption('selectOption', 's-1').should.be.true();
-      document.addOption('numberOption', 1).should.be.true();
+      document.addOption('selectOption', 's-1');
+      document.addOption('numberOption', 1);
 
       document.values.should.match([{
         id: 'selectOption',
@@ -387,7 +373,7 @@ describe('Document', () => {
         values: [],
         productContract: simpleProductContractData
       });
-      document.addOption('oneMoreString', "just string").should.be.true();
+      document.addOption('oneMoreString', "just string");
     });
 
     it('should reject if option not found', () => {
@@ -396,8 +382,14 @@ describe('Document', () => {
         productContract: selectProductContractComplex
       });
 
-      document.addOption('brokenOption', 'value').should.be.false();
-
+      let catchError = false;
+      try {
+        document.addOption('brokenOption', 'value');
+      } catch {
+        catchError = true
+      }
+      catchError.should.be.true();
+      
       document.values.should.match([]);
     });
 
@@ -407,7 +399,13 @@ describe('Document', () => {
         productContract: selectProductContractComplex
       });
 
-      document.addOption('selectOption', 'brokenSelect').should.be.false();
+      let catchError = false;
+      try {
+        document.addOption('selectOption', 'brokenSelect');
+      } catch {
+        catchError = true
+      }
+      catchError.should.be.true();
 
       document.values.should.match([]);
     });
@@ -418,9 +416,9 @@ describe('Document', () => {
         productContract: simpleProductContractData
       });
 
-      document.addOption('selectOption', 's-1').should.be.true();
-      document.addOption('numberOption', 5).should.be.true();
-      document.addOption('numberOption', 7).should.be.true();
+      document.addOption('selectOption', 's-1');
+      document.addOption('numberOption', 5);
+      document.addOption('numberOption', 7);
 
       document.values.should.match([{
         id: 'selectOption',
@@ -437,8 +435,8 @@ describe('Document', () => {
         productContract: simpleProductContractData
       });
 
-      document.addOption('selectOption', 's-1').should.be.true();
-      document.addOption('numberOption', 5).should.be.true();
+      document.addOption('selectOption', 's-1');
+      document.addOption('numberOption', 5);
 
       document.values.should.match([{
         id: 'selectOption',
@@ -448,7 +446,7 @@ describe('Document', () => {
         value: 5
       }]);
 
-      document.addOption('selectOption', 's-2').should.be.true();
+      document.addOption('selectOption', 's-2');
 
       document.values.should.match([{
         id: 'selectOption',
@@ -472,7 +470,7 @@ describe('Document', () => {
         });
 
         // hideOptionsById
-        document.addOption('selectOption', 's-1').should.be.true();
+        document.addOption('selectOption', 's-1');
 
         let option = document.productContractModified.options.find(opt => opt.id === 'numberOption');
         should(option).not.be.undefined();
@@ -483,7 +481,7 @@ describe('Document', () => {
 
         console.log(document)
         // showOptionsById
-        document.addOption('selectOption', 's-2').should.be.true();
+        document.addOption('selectOption', 's-2');
 
         option = document.productContractModified.options.find(opt => opt.id === 'numberOption');
         should(option).not.be.undefined();

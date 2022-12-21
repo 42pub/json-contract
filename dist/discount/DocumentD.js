@@ -7,6 +7,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -40,7 +42,7 @@ var DocumentD = (function (_super) {
         var productContract = _a.productContract, values = _a.values, args = __rest(_a, ["productContract", "values"]);
         var valuesObj = values.map(function (v) { return new Document_1.Value(v.id, v.value); });
         productContract = ProductContractD_1.default.build(productContract);
-        return new DocumentD(productContract, valuesObj, util_1.objectToProperties(args));
+        return new DocumentD(productContract, valuesObj, (0, util_1.objectToProperties)(args));
     };
     DocumentD.prototype.processing = function (contract) {
         this.productContractModified = (contract || this.productContract).clone();

@@ -7,6 +7,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -24,6 +26,7 @@ var OptionString = (function (_super) {
         _this.regex = regex;
         _this.anyData = anyData;
         _this.handler = handler;
+        _this.isRequired = isRequired !== undefined ? isRequired : true;
         return _this;
     }
     OptionString.buildOption = function (_a) {
@@ -33,19 +36,19 @@ var OptionString = (function (_super) {
     OptionString.prototype.validate = function (value) {
         if (value) {
             if (typeof value !== 'string')
-                return false;
+                throw "Value is not string";
             var len = value.length;
             if (this.minLength)
                 if (len < this.minLength)
-                    return false;
+                    throw "Value length less than minLength";
             if (this.maxLength)
                 if (len > this.maxLength)
-                    return false;
+                    throw "Value length more than maxLength";
             if (this.regex)
                 if (!value.match(this.regex))
-                    return false;
+                    throw "Value not match regex";
         }
-        return _super.prototype.validate.call(this, value);
+        _super.prototype.validate.call(this, value);
     };
     OptionString.prototype.getRejectReason = function (value) {
         if (value) {

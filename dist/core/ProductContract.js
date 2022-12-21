@@ -7,6 +7,8 @@ var __extends = (this && this.__extends) || (function () {
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -56,7 +58,7 @@ var ProductContract = (function (_super) {
     ProductContract.build = function (_a) {
         var locale = _a.locale, name = _a.name, options = _a.options, badge = _a.badge, deliveryTime = _a.deliveryTime, currency = _a.currency, description = _a.description, prefix = _a.prefix, finish = _a.finish, price = _a.price, revision = _a.revision, specificationMinVersion = _a.specificationMinVersion, start = _a.start, args = __rest(_a, ["locale", "name", "options", "badge", "deliveryTime", "currency", "description", "prefix", "finish", "price", "revision", "specificationMinVersion", "start"]);
         options = options.map(function (opt) { return Option_1.default.getOption(opt); });
-        return new ProductContract(options, name, locale, description, specificationMinVersion, prefix, badge, price, currency, start, finish, revision, deliveryTime, util_1.objectToProperties(args));
+        return new ProductContract(options, name, locale, description, specificationMinVersion, prefix, badge, price, currency, start, finish, revision, deliveryTime, (0, util_1.objectToProperties)(args));
     };
     ProductContract.prototype.clone = function () {
         return ProductContract.build(this.getJSON());

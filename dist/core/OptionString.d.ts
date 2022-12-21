@@ -12,6 +12,6 @@ export default class OptionString extends Option {
     constructor(id: string, type: string, label: string, isRequired?: boolean, isHidden?: boolean, description?: string, anyData?: string, minLength?: number, maxLength?: number, regex?: string);
     constructor(id: string, type: string, label: string, isRequired?: boolean, isHidden?: boolean, description?: string, anyData?: string, minLength?: number, maxLength?: number, regex?: string, handler?: any);
     static buildOption({ anyData, description, id, isRequired, isHidden, label, maxLength, minLength, regex, type, handler }: OptionString): OptionString;
-    validate(value: any): boolean;
+    validate(value: any): void;
     getRejectReason(value: any): Reason | undefined;
 }

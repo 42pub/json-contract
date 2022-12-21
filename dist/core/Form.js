@@ -14,21 +14,16 @@ var Form = (function () {
         var _loop_1 = function (option) {
             var value = document.values.filter(function (v) { return v.id === option.id; })[0] || {};
             if (option.type === Option_1.OptionTypes.SELECT) {
-                if (!option.validate(value.value, document)) {
-                    return { value: false };
-                }
+                option.validate(value.value, document);
             }
-            else if (!option.validate(value.value)) {
-                return { value: false };
+            else {
+                option.validate(value.value);
             }
         };
         for (var _i = 0, _a = this.options; _i < _a.length; _i++) {
             var option = _a[_i];
-            var state_1 = _loop_1(option);
-            if (typeof state_1 === "object")
-                return state_1.value;
+            _loop_1(option);
         }
-        return true;
     };
     Form.prototype.getRejectReason = function (document) {
         var _loop_2 = function (option) {
@@ -36,7 +31,7 @@ var Form = (function () {
             if (option.type === Option_1.OptionTypes.SELECT) {
                 var reason = option.getRejectReason(value.value, document);
                 if (reason) {
-                    reason.rejectOption = "" + option.id + (reason.rejectOption ? ':' + reason.rejectOption : '');
+                    reason.rejectOption = "".concat(option.id).concat(reason.rejectOption ? ':' + reason.rejectOption : '');
                     return { value: reason };
                 }
             }
@@ -50,9 +45,9 @@ var Form = (function () {
         };
         for (var _i = 0, _a = this.options; _i < _a.length; _i++) {
             var option = _a[_i];
-            var state_2 = _loop_2(option);
-            if (typeof state_2 === "object")
-                return state_2.value;
+            var state_1 = _loop_2(option);
+            if (typeof state_1 === "object")
+                return state_1.value;
         }
         return undefined;
     };

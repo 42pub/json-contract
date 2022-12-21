@@ -16,7 +16,7 @@ export default class Document implements DocumentBuild {
     check(): boolean;
     getRejectReason(): Reason | undefined;
     getNextUnfilled(): Option;
-    addOption(id: string, value: any): boolean;
+    addOption(id: string, value: any): void;
     getValue(id: string): any;
     processing(contract?: ProductContract): boolean;
     dry(): DocumentDry;

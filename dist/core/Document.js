@@ -34,10 +34,16 @@ var Document = (function () {
         var productContract = _a.productContract, values = _a.values, args = __rest(_a, ["productContract", "values"]);
         values = values.map(function (v) { return new Value(v.id, v.value); });
         productContract = ProductContract_1.default.build(productContract);
-        return new Document(productContract, values, util_1.objectToProperties(args));
+        return new Document(productContract, values, (0, util_1.objectToProperties)(args));
     };
     Document.prototype.check = function () {
-        return this.productContract.validate(this);
+        try {
+            this.productContract.validate(this);
+            return true;
+        }
+        catch (error) {
+            return false;
+        }
     };
     Document.prototype.getRejectReason = function () {
         return this.productContract.getRejectReason(this);
@@ -48,9 +54,8 @@ var Document = (function () {
     Document.prototype.addOption = function (id, value) {
         var option = this.findOptionById(id, this.productContract.options);
         if (!option)
-            return false;
-        if (!option.validate(value))
-            return false;
+            throw "Option ".concat(id, " not found in contract");
+        option.validate(value);
         var oldValue = this.values.find(function (v) { return v.id === id; });
         if (oldValue) {
             if (option.type === Option_1.OptionTypes.SELECT) {
@@ -67,7 +72,6 @@ var Document = (function () {
                 selected.action.activate(this.productContractModified);
             }
         }
-        return true;
     };
     Document.prototype.getValue = function (id) {
         var value = this.values.find(function (v) { return v.id === id; });
@@ -96,7 +100,7 @@ var Document = (function () {
                 return opt;
             }
             if (opt.type === Option_1.OptionTypes.SELECT) {
-                var selected = opt.getSelected(this.getValue(opt.id));
+                var selected = opt.getSelected(this.getValue(id));
                 if (selected) {
                     return this.findOptionById(id, selected.form.options);
                 }

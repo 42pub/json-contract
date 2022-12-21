@@ -5,7 +5,7 @@ export default class Form implements FormBuilder {
     options: Option[];
     constructor(options?: Option[]);
     protected static build({ options }: Form): Form;
-    validate(document: Document): boolean;
+    validate(document: Document): void;
     getRejectReason(document: Document): Reason | undefined;
     unfilledFields(document: Document): Option[];
     processing(document: Document, contract?: ProductContract): void;

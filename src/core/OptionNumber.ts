@@ -64,21 +64,18 @@ export default class OptionNumber extends Option {
    * не больше максимального и соответствовать regex. Так же производится проверка, поставляемая родительским классом.
    * @param value - значение для проверки
    */
-  public validate(value: any): boolean {
+  public validate(value: any): void {
     if (value) {
       if (typeof value !== 'number')
-        return false;
+        throw `Value is not number`
       if (this.min)
         if (value < this.min)
-          return false;
+          throw `Less than min`
       if (this.max)
         if (value > this.max)
-          return false;
-      if (this.regex)
-        if (!value.toString().match(this.regex))
-          return false;
+          throw `More than max`
     }
-    return super.validate(value);
+    super.validate(value);
   }
 
   /**

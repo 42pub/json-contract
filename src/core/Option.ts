@@ -105,14 +105,13 @@ export default class Option {
    * и значение передано пустым, то валидация не будет пройдена. В ином случае валидация пройдена.
    * @param value - значение для проверки
    */
-  public validate(value: any): boolean {
+  public validate(value: any): void {
     if (!this.isHidden) {
       if (this.isRequired) {
         if (!value)
-          return false;
+          throw `Value is required`
       }
     }
-    return true;
   }
 
   /**

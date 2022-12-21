@@ -60,19 +60,18 @@ export default class OptionSelect extends Option {
    * @param value - значение для проверки
    * @param document - документ, в котором хранятся вложенные значения
    */
-  public validate(value: any, document?: Document): boolean {
+  public validate(value: any, document?: Document): void {
     if (value) {
       const checked = this.options.filter(opt => opt.id === value)[0];
       if (this.isRequired)
         if (!checked)
-          return false;
+          throw `Select option not found`;
       if (checked)
         if (checked.form.options.length)
           if (document)
-            if (!checked.form.validate(document))
-              return false;
+            checked.form.validate(document)
     }
-    return super.validate(value);
+    super.validate(value);
   }
 
   /**

@@ -83,7 +83,12 @@ export default class Document implements DocumentBuild {
    * Проверяет, что все [[Value]] валидны для их [[Option]] (проверяет валидность каждой [[Option]])
    */
   public check(): boolean {
-    return this.productContract.validate(this);
+    try {
+      this.productContract.validate(this);
+      return true
+    } catch (error) {
+      return false
+    }
   }
 
   /**
@@ -108,15 +113,12 @@ export default class Document implements DocumentBuild {
    * @param id - [[Option]] id
    * @param value - Новое значение ввода
    */
-  public addOption(id: string, value: any): boolean {
+  public addOption(id: string, value: any): void {
     const option = this.findOptionById(id, this.productContract.options);
     if (!option)
-      return false;
+      throw `Option ${id} not found in contract`
 
-      option.validate(value)
-    if (!option.validate(value)) {
-      return false;
-    }
+    option.validate(value)
 
     const oldValue = this.values.find(v => v.id === id);
     if (oldValue) {
@@ -135,8 +137,6 @@ export default class Document implements DocumentBuild {
         selected.action.activate(this.productContractModified);
       }
     }
-
-    return true;
   }
 
   /**

@@ -77,22 +77,22 @@ export default class OptionString extends Option {
    * не больше максимальной и соответствовать regex. Так же производится проверка, поставляемая родительским классом.
    * @param value - значение для проверки
    */
-  public validate(value: any): boolean {
+  public validate(value: any): void {
     if (value) {
       if (typeof value !== 'string')
-        return false;
+        throw `Value is not string`
       const len = value.length;
       if (this.minLength)
         if (len < this.minLength)
-          return false;
+          throw `Value length less than minLength`
       if (this.maxLength)
         if (len > this.maxLength)
-          return false;
-      if (this.regex)
+          throw `Value length more than maxLength`
+        if (this.regex)
         if (!value.match(this.regex))
-          return false;
-    }
-    return super.validate(value);
+          throw `Value not match regex`
+      }
+    super.validate(value);
   }
 
   /**

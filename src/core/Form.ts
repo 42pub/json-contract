@@ -29,18 +29,15 @@ export default class Form implements FormBuilder {
    * Проверяет, что переданный документ содержит валиданые значения для options этого экземпляра
    * @param document - Документ, подлежащий проверке
    */
-  public validate(document: Document): boolean {
+  public validate(document: Document): void {
     for (let option of this.options) {
       const value = document.values.filter(v => v.id === option.id)[0] || {} as Value;
       if (option.type === OptionTypes.SELECT) {
-        if (!(<OptionSelect>option).validate(value.value, document)) {
-          return false;
-        }
-      } else if (!option.validate(value.value)) {
-        return false;
+        (<OptionSelect>option).validate(value.value, document)
+      } else {
+        option.validate(value.value)
       }
     }
-    return true;
   }
 
   /**
